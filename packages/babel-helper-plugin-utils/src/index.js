@@ -2,12 +2,12 @@ export function declare(builder) {
   return (api, options, dirname) => {
     let clonedApi;
 
-    for (const [name, create] of Object.entries(apiPolyfills)) {
+    for (const name of Object.keys(apiPolyfills)) {
       if (api[name]) continue;
 
       // TODO: Use ??= when flow lets us to do so
       clonedApi = clonedApi ?? copyApiObject(api);
-      clonedApi[name] = create(clonedApi);
+      clonedApi[name] = apiPolyfills[name](clonedApi);
     }
 
     return builder(clonedApi ?? api, options || {}, dirname);
